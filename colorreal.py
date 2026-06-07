@@ -8,27 +8,11 @@ from io import BytesIO
 ee.Initialize(project='alertas-temprana-avila')
 
 # ====================================================
-# FUNCIÓN NUEVA: MÁSCARA DE NUBES PARA SENTINEL-2
-# ====================================================
-def mask_s2_clouds(image):
-    """
-    Usa la banda QA60 para enmascarar (borrar) nubes densas y cirrus.
-    """
-    qa = image.select('QA60')
-    # Los bits 10 y 11 son nubes y cirrus, respectivamente.
-    cloudBitMask = 1 << 10
-    cirrusBitMask = 1 << 11
-    # Ambos flags deben estar en 0 (indicando cielo despejado).
-    mask = qa.bitwiseAnd(cloudBitMask).eq(0).And(qa.bitwiseAnd(cirrusBitMask).eq(0))
-    return image.updateMask(mask)
-
-# ====================================================
 # 1. CARGAR EL POLÍGONO DESDE GEOJSON LOCAL
 # ====================================================
 with open('el_avila_waraira_repano.geojson', 'r', encoding='utf-8') as f:
     geojson = json.load(f)
 
-# Extraer la geometría (asume FeatureCollection o Geometry directa)
 if geojson['type'] == 'FeatureCollection':
     geom = geojson['features'][0]['geometry']
 elif geojson['type'] == 'Feature':
@@ -36,39 +20,66 @@ elif geojson['type'] == 'Feature':
 else:
     geom = geojson
 
-# Convertir a geometría de Earth Engine
 roi = ee.Geometry(geom)
-
-# Verificar que se cargó correctamente
 area_km2 = roi.area().getInfo() / 1e6
 print(f"✅ Polígono cargado. Área: {area_km2:.2f} km²")
 
 # ====================================================
-# 2. BUSCAR IMAGEN SATELITAL (Sentinel-2)
+# 2. CONFIGURAR LAS COLECCIONES DE IMÁGENES
 # ====================================================
-# Aplicamos un filtro suave (ej. 60%) para descartar días de tormenta total, 
-# pero confiamos en la máscara (.map) para limpiar el resto.
-coleccion = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
-             .filterBounds(roi)
-             .filterDate('2026-01-01', '2026-03-25')
-             .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 60))
-             .map(mask_s2_clouds)) # <--- AQUÍ SE BORRAN LAS NUBES
+START_DATE = '2026-01-01'
+END_DATE = '2026-03-25'
 
-n_imagenes = coleccion.size().getInfo()
+# Colección 1: Imágenes de superficie (SR) con filtro global RECOMENDADO (50%)
+s2_sr = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+         .filterBounds(roi)
+         .filterDate(START_DATE, END_DATE)
+         .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 50)))
+
+# Colección 2: Probabilidad de nubes correspondiente
+s2_clouds = (ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
+             .filterBounds(roi)
+             .filterDate(START_DATE, END_DATE))
+
+# Unir las colecciones basándonos en el ID del sistema para poder usar la probabilidad
+s2_sr_with_clouds = ee.ImageCollection(ee.Join.saveFirst('cloud_mask').apply(
+    primary=s2_sr,
+    secondary=s2_clouds,
+    condition=ee.Filter.equals(leftField='system:index', rightField='system:index')
+))
+
+# ====================================================
+# FUNCIÓN DE ENMASCARADO OPTIMIZADA, USANDO LA IMAGEN DE PROBABILIDAD. La desventaja es que elimina mas pixeles, puediendo dejar zonas sin datos, pero la ventaja es que es mucho más precisa para eliminar nubes y sombras.
+# ====================================================
+def mask_s2_clouds(image):
+    # Extraer la imagen de probabilidad acoplada en el Join
+    cloud_img = ee.Image(image.get('cloud_mask'))
+    cld_prb = cloud_img.select('probability')
+    
+    # Umbral estricto: > 15% se considera nube (ajustable según necesidades)
+    # Para un enfoque más conservador, podríamos usar > 25% o incluso > 30%
+    is_cloud = cld_prb.gt(15)   
+    
+    # Aplicar la máscara (oculta las nubes)
+    return image.updateMask(is_cloud.Not())
+
+# Aplicar la máscara a la colección acoplada
+coleccion_limpia = s2_sr_with_clouds.map(mask_s2_clouds)
+
+n_imagenes = coleccion_limpia.size().getInfo()
 print(f"Imágenes base encontradas para procesar: {n_imagenes}")
 
 if n_imagenes == 0:
-    print("❌ No se encontraron imágenes. Revisa las fechas o usa Landsat.")
+    print("❌ No se encontraron imágenes limpias en este rango.")
     exit()
 
-# Sacamos la primera imagen SOLO para extraer la fecha de referencia
-imagen_base = coleccion.first()
+# Extraer fecha de referencia de la más reciente
+imagen_base = coleccion_limpia.sort('system:time_start', False).first()
 fecha = ee.Date(imagen_base.get('system:time_start')).format('YYYY-MM-dd').getInfo()
 print(f"📅 Fecha de referencia más reciente: {fecha}")
 
-# AQUÍ ESTÁ EL TRUCO: Pegamos todas las cuadrículas limpias (mediana) 
-# y recortamos (.clip) la silueta exacta del parque
-imagen = coleccion.median().clip(roi)
+# Calcular la MEDIANA (el mejor reductor para series de tiempo)
+imagen_final = coleccion_limpia.median().clip(roi)
 
 # ====================================================
 # 3. GENERAR THUMBNAIL (color real)
@@ -76,14 +87,14 @@ imagen = coleccion.median().clip(roi)
 parametros = {
     'bands': ['B4', 'B3', 'B2'],
     'min': 0,
-    'max': 2500,
-    'scale': 20,          # resolución 20 m/píxel (equilibrio entre calidad y peso)
+    'max': 2500, # Bajamos un poco para ganar contraste en la vegetación oscura
+    'scale': 20, 
     'region': roi,
     'format': 'png'
 }
 
 print("Generando thumbnail del parque a color real y sin nubes...")
-url = imagen.getThumbURL(parametros)
+url = imagen_final.getThumbURL(parametros)
 resp = requests.get(url, timeout=60)
 
 if resp.status_code == 200:
@@ -93,5 +104,3 @@ if resp.status_code == 200:
     print(f"Tamaño: {img.size[0]} x {img.size[1]} píxeles")
 else:
     print(f"❌ Error HTTP {resp.status_code}")
-    print("Copia esta URL en el navegador para depurar:")
-    print(url)
