@@ -1,0 +1,15 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "type": "Point",
+                "coordinates": [-66.8650, 10.5120]
+            },
+            "properties": {
+                "T21": 340
+            }
+        }
+    ]
+}
