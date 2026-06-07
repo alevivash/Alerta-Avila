@@ -1,0 +1,74 @@
+{
+    "type": "FeatureCollection",
+    "columns": {
+        "count": "Long<0, 4294967295>",
+        "label": "Short",
+        "system:index": "String"
+    },
+    "features": [
+        {
+            "type": "Feature",
+            "geometry": {
+                "geodesic": false,
+                "type": "Point",
+                "coordinates": [
+                    -66.28331613286404,
+                    10.506920141882954
+                ]
+            },
+            "id": "-7378+1170",
+            "properties": {
+                "count": 8,
+                "label": 338
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "geodesic": false,
+                "type": "Point",
+                "coordinates": [
+                    -66.73584245723926,
+                    10.60910350545155
+                ]
+            },
+            "id": "-7429+1181",
+            "properties": {
+                "count": 4,
+                "label": 316
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "geodesic": false,
+                "type": "Point",
+                "coordinates": [
+                    -66.88406447911898,
+                    10.597874564400055
+                ]
+            },
+            "id": "-7446+1180",
+            "properties": {
+                "count": 4,
+                "label": 314
+            }
+        },
+        {
+            "type": "Feature",
+            "geometry": {
+                "geodesic": false,
+                "type": "Point",
+                "coordinates": [
+                    -66.92448866690435,
+                    10.53274670630139
+                ]
+            },
+            "id": "-7450+1172",
+            "properties": {
+                "count": 2,
+                "label": 365
+            }
+        }
+    ]
+}

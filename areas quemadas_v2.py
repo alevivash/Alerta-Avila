@@ -1,5 +1,6 @@
 import ee
 import json
+import os
 import requests
 from PIL import Image
 from io import BytesIO
@@ -11,15 +12,9 @@ ee.Initialize(project='alertas-temprana-avila')
 # FUNCIONES: MÁSCARA DE PROBABILIDAD AVANZADA Y JOIN
 # =====================================================================
 def obtener_coleccion_unida(roi, fecha_inicio, fecha_fin):
-    """
-    Acopla la colección Sentinel-2 óptica con su respectiva capa de 
-    probabilidad de nubes usando ee.Join.
-    """
     s2_sr = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
              .filterBounds(roi)
              .filterDate(fecha_inicio, fecha_fin)
-             
-             # Filtro global recomendado para la colección SR
              .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 50)))
 
     s2_clouds = (ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
@@ -33,21 +28,13 @@ def obtener_coleccion_unida(roi, fecha_inicio, fecha_fin):
     ))
 
 def mask_s2_clouds(image):
-    """
-    Aplica la máscara de probabilidad píxel a píxel para borrar nubes y sombras.
-    """
     cloud_img = ee.Image(image.get('cloud_mask'))
     cld_prb = cloud_img.select('probability')
-    
-    #  Umbral estricto: > 15% se considera nube (ajustable según necesidades)
-    # Para un enfoque más conservador, podríamos usar > 25% o incluso > 
-    # 30% para eliminar más nubes, aunque esto podría dejar zonas sin datos.
     is_cloud = cld_prb.gt(15) 
-    
     return image.updateMask(is_cloud.Not())
 
 # =====================================================================
-# 2. CARGAR EL POLÍGONO REAL DEL ÁVILA DESDE GEOJSON LOCAL
+# 2. CARGAR EL POLÍGONO
 # =====================================================================
 geojson_path = 'el_avila_waraira_repano.geojson'  
 
@@ -70,7 +57,7 @@ if area_km2 <= 0:
     exit()
 
 # =====================================================================
-# 3. BUSCAR IMÁGENES ACTUALES Y APLICAR MEDIANA SIN NUBES
+# 3. BUSCAR IMÁGENES ACTUALES
 # =====================================================================
 coleccion_base = obtener_coleccion_unida(roi, '2026-02-01', '2026-03-25')
 sentinel_coleccion_limpia = coleccion_base.map(mask_s2_clouds)
@@ -81,19 +68,13 @@ print(f"Imágenes base limpias encontradas: {conteo}")
 if conteo > 0:
     imagen_referencia = sentinel_coleccion_limpia.sort('system:time_start', False).first()
     fecha_actual = ee.Date(imagen_referencia.get('system:time_start'))
-    
     imagen_actual_limpia = sentinel_coleccion_limpia.median()
-    
-    # -----------------------------------------------------------------
-    # CAMBIO A NBR: Usamos B8A (NIR) y B12 (SWIR)
-    # -----------------------------------------------------------------
     nbr_actual = imagen_actual_limpia.normalizedDifference(['B8A', 'B12']).rename('NBR_actual')
     
     # =====================================================================
-    # 4. HISTÓRICO (AMPLIADO Y ENMASCARADO PÍXEL A PÍXEL)
+    # 4. HISTÓRICO 
     # =====================================================================
     fecha_inicio_historico = fecha_actual.advance(-45, 'day')
-    
     coleccion_hist_base = obtener_coleccion_unida(roi, fecha_inicio_historico, fecha_actual)
     coleccion_historica_limpia = coleccion_hist_base.map(mask_s2_clouds)
     
@@ -101,60 +82,80 @@ if conteo > 0:
     print(f"Imágenes históricas encontradas para promediar: {conteo_hist}")
     
     if conteo_hist > 0:
-        # -----------------------------------------------------------------
-        # CAMBIO A NBR HISTÓRICO
-        # -----------------------------------------------------------------
         nbr_historico_promedio = (coleccion_historica_limpia
                                    .map(lambda img: img.normalizedDifference(['B8A', 'B12']))
                                    .median()
                                    .rename('NBR_hist'))
 
         # =====================================================================
-        # 5. CALCULAR DELTA NBR Y RECORTAR AL ÁVILA
+        # 5. CALCULAR DELTA NBR
         # =====================================================================
-        # Diferencial temporal porcentual calculado respecto al promedio histórico
         delta_nbr = (nbr_actual.subtract(nbr_historico_promedio)
                       .divide(nbr_historico_promedio)
                       .multiply(100)
                       .rename('Delta_NBR'))
         
         delta_avila = delta_nbr.clip(roi)
-        
         print("\n¡Éxito en la Fase Analítica con NBR!")
         
         # =====================================================================
-        # 6. DESCARGA DEL MAPA VISUAL (ANOMALÍAS DE CALCINACIÓN)
+        # 6. CRUCE DE INFORMACIÓN: SUPERPONER HOTSPOTS
         # =====================================================================
-        parametros_visuales = {
-            'min': -40, # Mínimo ligeramente ampliado para resaltar severidad de quema
+        mapa_visual_base = delta_avila.visualize(**{
+            'min': -40,
             'max': 0,
-            'palette': ['red', 'yellow', 'green'],
-            'dimensions': 1200, 
+            'palette': ['red', 'yellow', 'green']
+        })
+
+        if os.path.exists('focos_activos.geojson'):
+            print("🔥 Focos activos detectados por el Script 2. Cruzando información espacial...")
+            with open('focos_activos.geojson', 'r', encoding='utf-8') as f:
+                datos_focos = json.load(f)
+            
+            # --- SOLUCIÓN AL ERROR GEODESIC ---
+            # Construimos los Features manualmente extrayendo solo las coordenadas
+            lista_features_ee = []
+            for foco in datos_focos['features']:
+                # Extraemos la longitud y latitud limpia
+                lon, lat = foco['geometry']['coordinates']
+                # Construimos el punto de GEE sin basura de metadatos
+                punto_ee = ee.Geometry.Point([lon, lat])
+                # Mantenemos las propiedades (como la temperatura T21)
+                propiedades = foco.get('properties', {})
+                lista_features_ee.append(ee.Feature(punto_ee, propiedades))
+            
+            # Ahora sí creamos la FeatureCollection sin que GEE se queje
+            focos_ee = ee.FeatureCollection(lista_features_ee)
+            # ----------------------------------
+            
+            # Pintamos los focos (blanco brillante, tamaño 5)
+            capa_focos_termicos = focos_ee.draw(color='FFFFFF', pointRadius=5)
+            
+            # Fusionamos la capa de NBR con los puntos térmicos
+            mapa_final_combinado = mapa_visual_base.blend(capa_focos_termicos)
+        else:
+            print("✅ No se encontraron archivos de focos activos hoy. Generando mapa base limpio.")
+            mapa_final_combinado = mapa_visual_base
+
+        # =====================================================================
+        # 7. DESCARGA DEL MAPA FINAL CRUZADO
+        # =====================================================================
+        print("Descargando mapa de alertas...")
+        url_mapa = mapa_final_combinado.getThumbURL({
+            'dimensions': 1200,
             'region': roi,
             'format': 'png'
-        }
-        
-        print("Descargando mapa de alertas matemáticas (Delta NBR)...")
-        url_mapa = delta_avila.getThumbURL(parametros_visuales)
-        
+        })
+
         respuesta = requests.get(url_mapa)
         if respuesta.status_code == 200:
             imagen_pil = Image.open(BytesIO(respuesta.content))
             imagen_pil.save("alerta_avila_nbr.png")
-            print("👉 ¡Éxito! Archivo 'alerta_avila_nbr.png' actualizado enfocando huellas de incendio.")
+            print("👉 ¡Éxito! Archivo 'alerta_avila_nbr.png' guardado correctamente.")
         else:
             print(f"❌ Error al descargar la imagen: {respuesta.status_code}")
-    else:
-        print("\n❌ Error: La colección histórica está vacía. Intenta ampliar el rango de días en 'advance'.")
 
+    else:
+        print("\n❌ Error: La colección histórica está vacía.")
 else:
     print("\n⚠️ No se encontraron imágenes base en ese rango temporal.")
-    
-
-    
-
-# Bibliografía:
-# - Documentación oficial de GEE: https://developers.google.com/earth-engine/guides/python_install
-# - Tutorial de Sentinel-2 con S2Cloudless:
-#  https://developers.google.com/earth-engine/tutorials/community/sentinel-2-s2cloudless
-# NBR: El cambio a NBR es estratégico para detectar áreas quemadas, ya que esta banda es más sensible a la vegetación afectada por incendios. Sin embargo, el NDVI sigue siendo útil para monitorear la salud general de la vegetación. En futuras iteraciones, podríamos generar ambos índices para un análisis más completo.
