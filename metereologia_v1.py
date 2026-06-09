@@ -2,6 +2,7 @@ import requests
 import datetime
 
 def obtener_clima_actual(lat, lon):
+    
     """
     Consulta la API de Open-Meteo para obtener condiciones meteorológicas.
     Variables seleccionadas: Temperatura, Humedad, Viento y Radiación Solar.

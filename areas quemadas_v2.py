@@ -53,7 +53,7 @@ roi = ee.Geometry(geom_dict)
 area_km2 = roi.area().getInfo() / 1e6
 print(f"✅ Polígono cargado desde {geojson_path}. Área: {area_km2:.2f} km²")
 if area_km2 <= 0:
-    print("⚠️ El polígono parece vacío o mal proyectado. Revisa el archivo.")
+    print(" El polígono parece vacío o mal proyectado. Revisa el archivo.")
     exit()
 
 # =====================================================================
@@ -153,9 +153,9 @@ if conteo > 0:
             imagen_pil.save("alerta_avila_nbr.png")
             print("👉 ¡Éxito! Archivo 'alerta_avila_nbr.png' guardado correctamente.")
         else:
-            print(f"❌ Error al descargar la imagen: {respuesta.status_code}")
+            print(f"❌Error al descargar la imagen: {respuesta.status_code}")
 
     else:
-        print("\n❌ Error: La colección histórica está vacía.")
+        print("\n Error: La colección histórica está vacía.")
 else:
-    print("\n⚠️ No se encontraron imágenes base en ese rango temporal.")
+    print("\n No se encontraron imágenes base en ese rango temporal.")

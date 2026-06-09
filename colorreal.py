@@ -76,7 +76,7 @@ if n_imagenes == 0:
 # Extraer fecha de referencia de la más reciente
 imagen_base = coleccion_limpia.sort('system:time_start', False).first()
 fecha = ee.Date(imagen_base.get('system:time_start')).format('YYYY-MM-dd').getInfo()
-print(f"📅 Fecha de referencia más reciente: {fecha}")
+print(f" Fecha de referencia más reciente: {fecha}")
 
 # Calcular la MEDIANA (el mejor reductor para series de tiempo)
 imagen_final = coleccion_limpia.median().clip(roi)
