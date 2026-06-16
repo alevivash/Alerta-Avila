@@ -1,3 +1,7 @@
+# Sistema de Alerta Temprana para Incendios Forestales en el Waraira Repano
+# Este script integra la detección de focos de calor, análisis de vegetación y consulta meteorológica para proporcionar un monitoreo integral del Parque Nacional El Ávila (Waraira Repano).
+# Autor: [Alejandro Vivas]
+
 import os
 import json
 import ee
@@ -59,6 +63,8 @@ def ejecutar_sistema():
             "Pico Naiguatá (Cumbre Máxima / Alta Montaña - Cota Alta)": {"lat": 10.5428, "lon": -66.7828}
         }
         
+        repote_climatico = meteorologia.obtener_reporte_completo(puntos_control)
+
         for nombre, coords in puntos_control.items():
             clima = meteorologia.obtener_clima_actual(coords['lat'], coords['lon'])
             
