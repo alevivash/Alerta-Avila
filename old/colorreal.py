@@ -1,8 +1,13 @@
+# Sistema de Alerta Temprana para Incendios Forestales en el Waraira Repano
+# Este script se encarga de generar un mapa a color real del Parque Nacional El Ávila (Waraira Repano) utilizando imágenes Sentinel-2, aplicando un filtro de nubes basado en la probabilidad de nubes y guardando el resultado localmente como PNG.
+# Autor: [Alejandro Vivas]
+
 import ee
 import json
 import requests
 from PIL import Image
 from io import BytesIO
+import datetime
 
 # Inicializar GEE
 ee.Initialize(project='alertas-temprana-avila')
@@ -27,14 +32,14 @@ print(f"✅ Polígono cargado. Área: {area_km2:.2f} km²")
 # ====================================================
 # 2. CONFIGURAR LAS COLECCIONES DE IMÁGENES
 # ====================================================
-START_DATE = '2026-01-01'
-END_DATE = '2026-03-25'
+END_DATE = datetime.datetime.now()
+START_DATE = END_DATE  - datetime.timedelta(days=45)  # Últimos 45 días 
 
 # Colección 1: Imágenes de superficie (SR) con filtro global RECOMENDADO (50%)
 s2_sr = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
          .filterBounds(roi)
          .filterDate(START_DATE, END_DATE)
-         .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 50)))
+         .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 50))) 
 
 # Colección 2: Probabilidad de nubes correspondiente
 s2_clouds = (ee.ImageCollection('COPERNICUS/S2_CLOUD_PROBABILITY')
@@ -56,9 +61,9 @@ def mask_s2_clouds(image):
     cloud_img = ee.Image(image.get('cloud_mask'))
     cld_prb = cloud_img.select('probability')
     
-    # Umbral estricto: > 15% se considera nube (ajustable según necesidades)
+   
     # Para un enfoque más conservador, podríamos usar > 25% o incluso > 30%
-    is_cloud = cld_prb.gt(15)   
+    is_cloud = cld_prb.gt(25)   
     
     # Aplicar la máscara (oculta las nubes)
     return image.updateMask(is_cloud.Not())

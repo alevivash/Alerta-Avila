@@ -8,6 +8,7 @@ import ee
 import hotspots_detector
 import meteorologia
 import analisis_vegetacion_nbr
+import notificaciones
 
 # Inicializar Earth Engine
 ee.Initialize(project='alertas-temprana-avila')
@@ -63,7 +64,8 @@ def ejecutar_sistema():
             "Pico Naiguatá (Cumbre Máxima / Alta Montaña - Cota Alta)": {"lat": 10.5428, "lon": -66.7828}
         }
         
-        repote_climatico = meteorologia.obtener_reporte_completo(puntos_control)
+        # Obtener reporte completo para los puntos de control
+        reporte_climatico = meteorologia.obtener_reporte_completo(puntos_control)
 
         for nombre, coords in puntos_control.items():
             clima = meteorologia.obtener_clima_actual(coords['lat'], coords['lon'])

@@ -1,0 +1,4 @@
+functions-framework==3.*
+google-earth-engine==0.1.*
+google-auth==2.*
+requests==2.*

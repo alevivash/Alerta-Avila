@@ -24,7 +24,9 @@ roi = ee.Geometry.Polygon([coordenadas_avila])
 sentinel_coleccion = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
                       .filterBounds(roi)
                       .filterDate('2026-04-01', '2026-06-04')
-                      .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 60))
+
+                      #     
+                      .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 50))
                       .sort('system:time_start', False))
 
 conteo = sentinel_coleccion.size().getInfo()
@@ -42,8 +44,11 @@ if conteo > 0:
     coleccion_historica = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
                             .filterBounds(roi)
                             .filterDate(fecha_inicio_historico, fecha_actual)
+
+                            # Para el histórico, podemos ser un poco más permisivos con las nubes, pero aún así es recomendable mantener un umbral razonable para evitar falsos promedios por nubes. Aquí usamos 60% como ejemplo.
                             .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', 60)))
-    
+                            
+                            
     # Reducir la colección histórica mapeando el NDVI y calculando la media píxel por píxel
     ndvi_historico_promedio = (coleccion_historica
                                .map(lambda img: img.normalizedDifference(['B8', 'B4']))
