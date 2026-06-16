@@ -1,3 +1,7 @@
+#version 2.0 - Mejoras en la estructura del código, manejo de errores y formato de salida.
+# Este script se encarga de consultar la API de Open-Meteo para obtener las condiciones meteorológicas actuales en puntos estratégicos del Waraira Repano (El Ávila).
+# Se han agregado más puntos de interés, mejorado el formato de salida y se ha implement
+
 import requests
 import datetime
 

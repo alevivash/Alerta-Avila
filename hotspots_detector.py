@@ -1,3 +1,6 @@
+# Hotspots Detector - Script 20 - Detecta focos de calor en El Ávila usando FIRMS y los vectoriza
+# Este script se encarga de extraer los focos de calor del catálogo FIRMS,  
+
 import ee
 import datetime
 import json
@@ -13,8 +16,10 @@ def obtener_vectores_fuego(roi):
     fecha_str = ayer.strftime('%Y-%m-%d')
     hoy_str = datetime.date.today().strftime('%Y-%m-%d')
 
-    fecha_str = '2024-03-20' 
-    hoy_str = '2024-04-10'
+
+    # SE PUEDEN USAR ESTAS FECHAS COMO PRUEBA PARA OBTENER FOCOS HISTÓRICOS
+    #fecha_str = '2024-03-20' 
+    #hoy_str = '2024-04-10'
     
     # 1. Obtener la colección raster diaria
     firms = (ee.ImageCollection('FIRMS')
