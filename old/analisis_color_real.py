@@ -1,10 +1,11 @@
 # Sistema de Alerta Temprana para Incendios Forestales en el Waraira Repano
 # Este script se encarga de generar un mapa a color real del Parque Nacional El Ávila (Waraira Repano) utilizando imágenes Sentinel-2, aplicando un filtro de nubes basado en la probabilidad de nubes y guardando el resultado localmente como PNG.
-# Autor: Alejandro Vivas
+# Autor: [Alejandro Vivas]
 
 import ee
+import json
 import requests
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image
 from io import BytesIO
 import datetime as date
 
@@ -12,7 +13,8 @@ def descargar_mapa_preventivo(roi):
     """Genera un mapa a color real del Ávila usando S2_CLOUD_PROBABILITY con fechas dinámicas."""
     print("🛰️ Generando mapa satelital diario a color real (filtro avanzado de nubes)...")
     try:
-        # Fechas dinámicas: Últimos 45 días
+
+        # Fechas dinámicas: Últimos 45 días para asegurar imágenes recientes, se actualizan cada día automáticamente. Se formatean como strings para evitar problemas de formato con GEE
         END_DATE = date.datetime.now().strftime('%Y-%m-%d')
         START_DATE = (date.datetime.now() - date.timedelta(days=45)).strftime('%Y-%m-%d')
 
@@ -34,7 +36,7 @@ def descargar_mapa_preventivo(roi):
         def mask_s2_clouds(image):
             cloud_img = ee.Image(image.get('cloud_mask'))
             cld_prb = cloud_img.select('probability')
-            is_cloud = cld_prb.gt(25) # Umbral óptimo del 25% para el Ávila
+            is_cloud = cld_prb.gt(15)   
             return image.updateMask(is_cloud.Not())
 
         coleccion_limpia = s2_sr_with_clouds.map(mask_s2_clouds)
@@ -44,67 +46,30 @@ def descargar_mapa_preventivo(roi):
             print("❌ No se encontraron imágenes limpias recientes.")
             return None
 
-        # Extraemos la fecha de la imagen más reciente para imprimirla en la estampa
-        imagen_base = coleccion_limpia.sort('system:time_start', False).first()
-        fecha = ee.Date(imagen_base.get('system:time_start')).format('YYYY-MM-dd').getInfo()
-
         # Calcular la mediana para limpiar remanentes
         imagen_final = coleccion_limpia.median().clip(roi)
 
         parametros = {
             'bands': ['B4', 'B3', 'B2'],
             'min': 0,
-            'max': 2500, 
+            'max': 2500,
             'scale': 20, 
             'region': roi,
             'format': 'png'
         }
 
-        print("Generando thumbnail del parque a color real y sin nubes...")
         url = imagen_final.getThumbURL(parametros)
         resp = requests.get(url, timeout=60)
 
+        ruta_salida = "avila_color_real.png"
         if resp.status_code == 200:
-            # 1. Abrimos la imagen en modo RGBA
-            img = Image.open(BytesIO(resp.content)).convert("RGBA")
-    
-            # 2. Creamos una capa transparente
-            txt_layer = Image.new("RGBA", img.size, (255, 255, 255, 0))
-            d = ImageDraw.Draw(txt_layer)
-    
-            # 3. Definimos el texto con la fecha satelital extraída de GEE
-            texto_estampa = f"Sentinel-2 Color Real | Fecha: {fecha}"
-    
-            # 4. Cargamos la fuente
-            try:
-                font = ImageFont.truetype("arial.ttf", 24) 
-            except IOError:
-                font = ImageFont.load_default()
-        
-            # 5. Ubicación: Esquina inferior izquierda
-            posicion = (20, img.size[1] - 50)
-    
-            # 6. Dibujamos el recuadro negro de fondo
-            text_bbox = d.textbbox(posicion, texto_estampa, font=font)
-            fondo_bbox = [text_bbox[0] - 10, text_bbox[1] - 5, text_bbox[2] + 10, text_bbox[3] + 5]
-            d.rectangle(fondo_bbox, fill=(0, 0, 0, 160)) 
-    
-            # 7. Pintamos el texto en blanco
-            d.text(posicion, texto_estampa, fill=(255, 255, 255, 255), font=font)
-    
-            # 8. Combinamos las capas y guardamos
-            final_img = Image.alpha_composite(img, txt_layer).convert("RGB")
-            ruta_salida = "avila_color_real.png"
-            final_img.save(ruta_salida)
-    
-            print(f"✅ Imagen guardada exitosamente con estampa: {ruta_salida}")
-            
-            # Retornamos la ruta al orquestador para que Telegram la pueda enviar
+            img = Image.open(BytesIO(resp.content))
+            img.save(ruta_salida)
+            print(f"✅ Imagen color real guardada exitosamente: {ruta_salida}")
             return ruta_salida
         else:
-            print(f"❌ Error HTTP {resp.status_code}")
             return None
-            
+
     except Exception as e:
-        print(f"⚠️ Error en la generación del mapa: {e}")
+        print(f"⚠️ Error generando el mapa color real: {e}")
         return None

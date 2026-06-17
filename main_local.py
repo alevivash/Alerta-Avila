@@ -4,7 +4,8 @@ import ee
 import hotspots_detector
 import meteorologia
 import analisis_vegetacion_nbr
-import notificaciones # <-- Importamos tu módulo del bot
+import notificaciones 
+import analisis_color_real
 
 # Inicializar Earth Engine
 ee.Initialize(project='alertas-temprana-avila')
@@ -72,8 +73,11 @@ def ejecutar_sistema():
             reporte += linea_clima # Lo sumamos al reporte final
             print(linea_clima)     # Lo mostramos en el terminal
             
-        # Enviamos a Telegram (solo texto, sin imagen)
-        notificaciones.enviar_telegram(reporte)
+        # Generamos el mapa preventivo a color real y obtenemos su ruta local
+        ruta_mapa_preventivo = analisis_color_real.descargar_mapa_preventivo(roi)
+
+        # Enviamos a Telegram el reporte preventivo + el mapa a color real
+        notificaciones.enviar_telegram(reporte, ruta_mapa_preventivo)
         
         if os.path.exists('focos_activos.geojson'):
             os.remove('focos_activos.geojson')
