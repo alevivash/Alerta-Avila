@@ -1,6 +1,6 @@
 import requests
 
-TOKEN = "8805229300:AAG4v5u_i3QdzZsXD7P4gLNM4XRF6ltt03Y" # El de BotFather
+TOKEN = "xxxx" # El de BotFather
 CHAT_ID = "1533203515"           # El de userinfobot
 
 url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
