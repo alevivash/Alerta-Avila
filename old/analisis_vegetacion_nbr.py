@@ -1,5 +1,6 @@
 # Áreas Quemadas en El Ávila - Script 19 - Detección de áreas quemadas usando Sentinel-2 y NBR
 # Este script se encarga de detectar áreas quemadas en El Ávila utilizando imágenes Sentinel
+#version 1.0 - 2026-05-15 - Alejandro Vivas
 
 import ee
 import json

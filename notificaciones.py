@@ -3,7 +3,7 @@ import os
 
 def enviar_telegram(mensaje, ruta_imagen=None):
     # Usa variables de entorno o constantes aquí
-    TOKEN = "xxxx"
+    TOKEN = "8805229300:AAG4v5u_i3QdzZsXD7P4gLNM4XRF6ltt03Y"
     CHAT_ID = "1533203515"
     
     url_mensaje = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
