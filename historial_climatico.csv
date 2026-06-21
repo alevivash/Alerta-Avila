@@ -60,3 +60,6 @@ Fecha_Hora,Estacion,Temp_C,Humedad_%,Viento_kmh,Radiacion_Wm2
 2026-06-20 18:00,Sector La Julia (Falda),21.3,95,10.7,80.0,0.0
 2026-06-20 18:00,Estación Humboldt (Cota Media),18.0,87,1.0,69.0,0.1
 2026-06-20 18:00,Pico Naiguatá (Cota Alta),10.6,87,3.5,77.0,0.1
+2026-06-21 08:30,Sector La Julia (Falda),24.0,71,1.9,331.0,0.0
+2026-06-21 08:30,Estación Humboldt (Cota Media),19.4,78,6.9,323.0,0.0
+2026-06-21 08:30,Pico Naiguatá (Cota Alta),11.8,77,5.5,336.0,0.0

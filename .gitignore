@@ -1,0 +1,13 @@
+# Ignorar credenciales de Google Cloud
+alertas-temprana-avila-aff61fb63708.json
+*.json
+!el_avila_waraira_repano.geojson
+
+# Ignorar archivos generados automáticamente
+historial_climatico.csv
+avila_color_real.png
+alerta_avila_nbr.png
+
+# Ignorar carpetas internas de Python
+__pycache__/
+*.pyc
