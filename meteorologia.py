@@ -72,7 +72,10 @@ def guardar_historial_nube(nombre_estacion, clima):
 
         # 2. Autenticarse con Google Sheets
         creds_dict = json.loads(key_json)
-        scopes = ['https://www.googleapis.com/auth/spreadsheets']
+        scopes = [
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/drive'
+        ]
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         cliente = gspread.authorize(creds)
 
