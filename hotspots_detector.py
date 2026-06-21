@@ -6,7 +6,7 @@ import datetime
 import json
 
 # Inicializar
-ee.Initialize(project='alertas-temprana-avila')
+#ee.Initialize(project='alertas-temprana-avila') # CORREGIDO: Ahora se inicializa en main.py para evitar conflictos de inicialización múltiple al importar el módulo
 
 def obtener_vectores_fuego(roi):
     """
