@@ -11,7 +11,7 @@ import analisis_color_real
 # Leemos la clave JSON larga desde la variable de entorno de GitHub
 gee_key_json = os.environ["GEE_SERVICE_ACCOUNT_KEY"]
 gee_credentials = ee.ServiceAccountCredentials(
-    "TU_CORREO_DE_CUENTA_DE_SERVICIO@alertas-temprana-avila.iam.gserviceaccount.com", # <--- PEGA AQUÍ EL CORREO LARGO
+    "alertas-avila@alertas-temprana-avila.iam.gserviceaccount.com", 
     key_data=gee_key_json
 )
 
