@@ -55,6 +55,44 @@ def guardar_historial_csv(nombre_estacion, clima):
     except PermissionError:
         print(f"⚠️ ADVERTENCIA: No se pudo guardar el registro de {nombre_estacion}. El archivo '{archivo}' está abierto o bloqueado.")
 
+def guardar_historial_nube(nombre_estacion, clima):
+    """Guarda los datos consultados directamente en Google Sheets."""
+    try:
+        # 1. Leer la llave secreta que ya tienes configurada para GEE
+        key_json = os.environ.get("GEE_SERVICE_ACCOUNT_KEY")
+        if not key_json:
+            print(f"⚠️ No se guardó {nombre_estacion}: Falta la llave secreta en el entorno.")
+            return
+
+        # 2. Autenticarse con Google Sheets
+        creds_dict = json.loads(key_json)
+        scopes = ['https://www.googleapis.com/auth/spreadsheets']
+        creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
+        cliente = gspread.authorize(creds)
+
+        # 3. Abrir tu documento (¡REEMPLAZA ESTO CON TU ID REAL!)
+        ID_DOCUMENTO = "AQUI_PEGA_EL_ID_DE_TU_GOOGLE_SHEET"
+        sheet = cliente.open_by_key(ID_DOCUMENTO).sheet1
+
+        # 4. Preparar la fila de datos
+        precip = clima.get('precipitation', 0)
+        fila = [
+            datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), 
+            nombre_estacion, 
+            clima['temperature_2m'], 
+            clima['relative_humidity_2m'], 
+            clima['wind_speed_10m'], 
+            clima['direct_radiation'],
+            precip
+        ]
+
+        # 5. Insertar la fila al final del documento
+        sheet.append_row(fila)
+        print(f"☁️ Guardado en nube exitoso: {nombre_estacion}")
+
+    except Exception as e:
+        print(f"⚠️ Error al conectar con Google Sheets para {nombre_estacion}: {e}")
+
 def obtener_clima_actual(lat, lon):
     """Consulta la API de Open-Meteo con sistema de reintentos."""
     url = "https://api.open-meteo.com/v1/forecast"
@@ -77,19 +115,19 @@ def obtener_clima_actual(lat, lon):
     return None
 
 def obtener_reporte_completo(puntos):
-    """Recorre las ubicaciones, extrae el clima y lo guarda en el CSV."""
+    """Recorre las ubicaciones, extrae el clima y lo guarda en Sheets."""
     reporte = {}
     for nombre, coords in puntos.items():
-        print(f"📡 Consultando y guardando: {nombre}...")
+        print(f"📡 Consultando clima: {nombre}...")
         datos = obtener_clima_actual(coords['lat'], coords['lon'])
         
         if datos:
             reporte[nombre] = datos
-            guardar_historial_csv(nombre, datos) 
+            guardar_historial_nube(nombre, datos) # <-- actualizar sheets
+            #guardar_historial_csv(nombre, datos) # <-- mantener también el CSV local para respaldo
             
-        time.sleep(0.5) # Pausa estratégica
+        time.sleep(1) # Pausa estratégica aumentada un poco para no saturar la API de Google
     return reporte
-
 # Ejecución de prueba
 if __name__ == "__main__":
     print("📡 Iniciando recolección de datos meteorológicos...")

@@ -3,3 +3,4 @@ earthengine-api
 google-auth==2.*
 requests
 Pillow
+gspread
