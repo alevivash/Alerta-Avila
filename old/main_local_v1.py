@@ -1,3 +1,5 @@
+#version 1.0 - 2026-05-15 - Alejandro Vivas
+
 import os
 import json
 import ee
@@ -27,8 +29,8 @@ def ejecutar_sistema():
         reporte = f"🔥 ALERTA WARAIRA REPANO: {cantidad} focos detectados.\n\n"
         print(f"🔥 ALERTA: {cantidad} focos detectados.")
         
-        # Generar mapa visual cruzado (CORREGIDO: Se pasa el argumento 'roi')
-        analisis_vegetacion_nbr.generar_mapa_con_focos(roi)
+        # Generar mapa visual cruzado
+        analisis_vegetacion_nbr.generar_mapa_con_focos()
         
         lista_focos = focos_detectados.getInfo()['features']
         
@@ -37,13 +39,12 @@ def ejecutar_sistema():
             clima = meteorologia.obtener_clima_actual(lat, lon)
             
             if clima:
-                # 2. Redactamos la información climática (NUEVO: Precipitación)
+                # 2. Redactamos la información climática
                 datos_clima = (
                     f"📍 Ubicación: {lat}, {lon}\n"
                     f"   🌡️ Temp: {clima['temperature_2m']}°C | "
                     f"💧 Humedad: {clima['relative_humidity_2m']}%\n"
-                    f"   💨 Viento: {clima['wind_speed_10m']} km/h | "
-                    f"🌧️ Precipitación: {clima.get('precipitation', 0)} mm\n\n"
+                    f"   💨 Viento: {clima['wind_speed_10m']} km/h\n\n"
                 )
                 reporte += datos_clima # Lo sumamos al reporte final
                 print(datos_clima)     # Lo mostramos en el terminal
@@ -66,11 +67,10 @@ def ejecutar_sistema():
         reporte_clima = meteorologia.obtener_reporte_completo(puntos_control)
         
         for nombre, clima in reporte_clima.items():
-            # NUEVO: Precipitación agregada a la línea de reporte
             linea_clima = (
                 f"📍 {nombre}:\n"
                 f"   🌡️ Temp: {clima['temperature_2m']} °C | 💧 Humedad: {clima['relative_humidity_2m']} %\n"
-                f"   💨 Viento: {clima['wind_speed_10m']} km/h | 🌧️ Precipitación: {clima.get('precipitation', 0)} mm\n\n"
+                f"   💨 Viento: {clima['wind_speed_10m']} km/h\n\n"
             )
             reporte += linea_clima # Lo sumamos al reporte final
             print(linea_clima)     # Lo mostramos en el terminal
