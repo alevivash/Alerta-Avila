@@ -1,11 +1,7 @@
 import os
 import json
 import ee
-import hotspots_detector
-import meteorologia
-import analisis_vegetacion_nbr
-import notificaciones 
-import analisis_color_real
+
 
 
 # Leemos la clave JSON larga desde la variable de entorno de GitHub
@@ -16,7 +12,15 @@ gee_credentials = ee.ServiceAccountCredentials(
 )
 
 # Inicializar Earth Engine
-ee.Initialize(project='alertas-temprana-avila')
+ee.Initialize(credentials=gee_credentials, project='alertas-temprana-avila')
+
+# Se importan los módulos de cada parte del sistema
+
+import hotspots_detector
+import meteorologia
+import analisis_vegetacion_nbr
+import notificaciones 
+import analisis_color_real
 
 # Cargar el área de interés
 geojson_path = 'el_avila_waraira_repano.geojson'
