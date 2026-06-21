@@ -1,0 +1,37 @@
+name: Monitoreo Satelital y Climático Waraira Repano
+
+on:
+  schedule:
+    # SE EJECUTA DIARIAMENTE A LAS 10:00, 14:00 y 18:00 UTC
+    # (Recuerda que UTC es hora de Caracas +4h en horario de invierno, +3h en verano)
+    # 06:00, 10:00 y 14:00 hora de Venezuela
+    - cron: "0 10 * * *"
+    - cron: "0 14 * * *"
+    - cron: "0 18 * * *"
+  workflow_dispatch: # Permite ejecutar el script manualmente con un botón
+
+jobs:
+  monitorear:
+    runs-on: ubuntu-latest # Usamos Linux (más rápido y barato)
+
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11" # Versión estable y moderna
+
+      - name: Instalar dependencias
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Ejecutar script de monitoreo
+        # Definimos las variables de entorno para que Python las pueda leer
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GEE_SERVICE_ACCOUNT_KEY: ${{ secrets.GEE_SERVICE_ACCOUNT_KEY }}
+        run: python main.py
