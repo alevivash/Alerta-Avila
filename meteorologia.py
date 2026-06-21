@@ -71,7 +71,7 @@ def guardar_historial_nube(nombre_estacion, clima):
         cliente = gspread.authorize(creds)
 
         # 3. Abrir tu documento (¡REEMPLAZA ESTO CON TU ID REAL!)
-        ID_DOCUMENTO = "AQUI_PEGA_EL_ID_DE_TU_GOOGLE_SHEET"
+        ID_DOCUMENTO = "1S1hQ-qjbdeU1PsWGSRYu-HM7sCcXS9ljraJn1SJ6-xg"
         sheet = cliente.open_by_key(ID_DOCUMENTO).sheet1
 
         # 4. Preparar la fila de datos
