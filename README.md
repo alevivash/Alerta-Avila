@@ -38,7 +38,7 @@ An automated, serverless environmental monitoring system for El Ávila National 
 
 El flujo de datos se ejecuta de forma autónoma siguiendo esta estructura / _The data flow executes autonomously following this structure_:
 
-````text
+```text
 [GitHub Actions (Cron)]
        │
        ▼
@@ -52,15 +52,15 @@ El flujo de datos se ejecuta de forma autónoma siguiendo esta estructura / _The
        │
        ▼
 [notificaciones.py] ──► (Telegram API: Text + Images)
+```
 
 ## 🚀 Instalación Local / Local Setup
 
-Para ejecutar o probar el código en una máquina local / *To run or test the code on a local machine*:
+Para ejecutar o probar el código en una máquina local / _To run or test the code on a local machine_:
 
 1. **Clonar el repositorio / Clone the repository:**
-```bash
+   `bash
    git clone [https://github.com/tu_usuario/Alerta-Avila.git](https://github.com/tu_usuario/Alerta-Avila.git)
    cd Alerta-Avila
-````
 
 Autor / Author: Alejandro Vivas
