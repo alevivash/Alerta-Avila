@@ -1,5 +1,6 @@
 #version 2.0 - Mejoras en la estructura del código, manejo de errores y formato de salida.
 #version 3.0 - Se agregó una función para guardar el historial de datos meteorológicos en un archivo CSV, permitiendo un seguimiento a largo plazo de las condiciones climáticas en el Waraira Repano.
+#version 4.0 - Se implementó una función para guardar los datos meteorológicos directamente en Google Sheets, facilitando el acceso remoto y la colaboración en tiempo real.
 # Este script se encarga de consultar la API de Open-Meteo para obtener las condiciones meteorológicas actuales en puntos estratégicos del Waraira Repano (El Ávila).
 # Se han agregado más puntos de interés, mejorado el formato de salida y se ha implement
 
@@ -8,6 +9,11 @@ import datetime
 import time
 import os
 import csv
+
+# importacion de librerias para Google Sheets
+import json                                            
+import gspread                                         
+from google.oauth2.service_account import Credentials  
 
 # Sesión persistente para evitar bloqueos de red
 session = requests.Session()
