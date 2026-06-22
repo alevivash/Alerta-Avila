@@ -59,7 +59,7 @@ El flujo de datos se ejecuta de forma autónoma siguiendo esta estructura / _The
 Para ejecutar o probar el código en una máquina local / _To run or test the code on a local machine_:
 
 1. **Clonar el repositorio / Clone the repository:**
-   `bash
+   bash
    git clone [https://github.com/tu_usuario/Alerta-Avila.git](https://github.com/tu_usuario/Alerta-Avila.git)
    cd Alerta-Avila
 
