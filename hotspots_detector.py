@@ -67,7 +67,7 @@ focos_detectados = obtener_vectores_fuego(roi)
 cantidad = focos_detectados.size().getInfo()
 
 if cantidad > 0:
-    print(f"🔥 ¡ALERTA TÁCTICA! Se detectaron {cantidad} puntos de fuego.")
+    print(f" ¡ALERTA TÁCTICA! Se detectaron {cantidad} puntos de fuego.")
     
     # 4. EXTRAER DATOS EN FORMATO GEOJSON PARA EL CRUCE CON EL SCRIPT 1
     geojson_focos = focos_detectados.getInfo()
@@ -75,14 +75,14 @@ if cantidad > 0:
     # Guardamos los puntos en un archivo local para que el Script 1 pueda leerlo y pintarlo encima
     with open('focos_activos.geojson', 'w', encoding='utf-8') as f:
         json.dump(geojson_focos, f, ensure_ascii=False, indent=4)
-    print("💾 Archivo 'focos_activos.geojson' generado para el cruce analítico.")
+    print("Archivo 'focos_activos.geojson' generado para el cruce analítico.")
     
     # 5. EXTRAER COORDENADAS PARA TELEGRAM
     lista_focos = geojson_focos['features']
     for i, foco in enumerate(lista_focos):
         lon, lat = foco['geometry']['coordinates']
         link_maps = f"https://www.google.com/maps?q={lat},{lon}" # Corregido enlace estándar de Maps
-        print(f"📍 Foco {i+1}: {link_maps}")
+        print(f"Foco {i+1}: {link_maps}")
         
 else:
     print("✅ Bosque seguro. No hay anomalías térmicas recientes.")

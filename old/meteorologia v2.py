@@ -30,30 +30,15 @@ ubicaciones_estrategicas = {
 }
 
 def guardar_historial_csv(nombre_estacion, clima):
-    """Guarda los datos consultados en una base de datos plana CSV con manejo de errores."""
+    """Guarda los datos consultados en una base de datos plana CSV."""
     archivo = 'historial_climatico.csv'
     existe = os.path.exists(archivo)
     
-    try:
-        with open(archivo, mode='a', newline='', encoding='utf-8') as f:
-            writer = csv.writer(f)
-            if not existe:
-                # CAMBIO: Se agregó Precip_mm a la cabecera
-                writer.writerow(['Fecha_Hora', 'Estacion', 'Temp_C', 'Humedad_%', 'Viento_kmh', 'Radiacion_Wm2', 'Precip_mm'])
-            
-            # CAMBIO: Se agregó la extracción segura de la precipitación
-            precip = clima.get('precipitation', 0)
-            writer.writerow([
-                datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), 
-                nombre_estacion, 
-                clima['temperature_2m'], 
-                clima['relative_humidity_2m'], 
-                clima['wind_speed_10m'], 
-                clima['direct_radiation'],
-                precip
-            ])
-    except PermissionError:
-        print(f"⚠️ ADVERTENCIA: No se pudo guardar el registro de {nombre_estacion}. El archivo '{archivo}' está abierto o bloqueado.")
+    with open(archivo, mode='a', newline='', encoding='utf-8') as f:
+        writer = csv.writer(f)
+        if not existe:
+            writer.writerow(['Fecha_Hora', 'Estacion', 'Temp_C', 'Humedad_%', 'Viento_kmh', 'Radiacion_Wm2'])
+        writer.writerow([datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), nombre_estacion, clima['temperature_2m'], clima['relative_humidity_2m'], clima['wind_speed_10m'], clima['direct_radiation']])
 
 def obtener_clima_actual(lat, lon):
     """Consulta la API de Open-Meteo con sistema de reintentos."""
@@ -61,8 +46,7 @@ def obtener_clima_actual(lat, lon):
     params = {
         "latitude": lat,
         "longitude": lon,
-        # CAMBIO: Se agregó "precipitation" a la consulta
-        "current": ["temperature_2m", "relative_humidity_2m", "wind_speed_10m", "direct_radiation", "precipitation"],
+        "current": ["temperature_2m", "relative_humidity_2m", "wind_speed_10m", "direct_radiation"],
         "timezone": "America/Caracas"
     }
     
@@ -85,7 +69,7 @@ def obtener_reporte_completo(puntos):
         
         if datos:
             reporte[nombre] = datos
-            guardar_historial_csv(nombre, datos) 
+            guardar_historial_csv(nombre, datos) # <--- AQUÍ OCURRE LA MAGIA DEL GUARDADO
             
         time.sleep(0.5) # Pausa estratégica
     return reporte

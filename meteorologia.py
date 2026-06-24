@@ -59,7 +59,7 @@ def guardar_historial_csv(nombre_estacion, clima):
                 precip
             ])
     except PermissionError:
-        print(f"⚠️ ADVERTENCIA: No se pudo guardar el registro de {nombre_estacion}. El archivo '{archivo}' está abierto o bloqueado.")
+        print(f"ADVERTENCIA: No se pudo guardar el registro de {nombre_estacion}. El archivo '{archivo}' está abierto o bloqueado.")
 
 def guardar_historial_nube(nombre_estacion, clima):
     """Guarda los datos consultados directamente en Google Sheets."""

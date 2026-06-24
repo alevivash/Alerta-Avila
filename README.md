@@ -27,10 +27,10 @@ An automated, serverless environmental monitoring system for El Ávila National 
 
 ## 📌 Características / Key Features
 
-- **🔥 Detección de Focos de Calor / Hotspot Detection:** Identificación de anomalías térmicas recientes dentro del polígono del parque.
-- **🗺️ Índice Delta NBR & Color Real:** Generación de mapas de severidad de quema (bandas NIR/SWIR) e imágenes RGB diarias con enmascaramiento avanzado de nubes (`S2_CLOUD_PROBABILITY`).
-- **🌦️ Telemetría Meteorológica / Weather Telemetry:** Monitoreo en puntos estratégicos (Temperatura, Humedad, Viento, Precipitación en mm) para evaluar el riesgo de propagación.
-- **☁️ Arquitectura Serverless:** Ejecución programada mediante _cron jobs_ en GitHub Actions, sin requerir hardware local.
+- **Detección de Focos de Calor / Hotspot Detection:** Identificación de anomalías térmicas recientes dentro del polígono del parque.
+- **Índice Delta NBR & Color Real:** Generación de mapas de severidad de quema (bandas NIR/SWIR) e imágenes RGB diarias con enmascaramiento avanzado de nubes (`S2_CLOUD_PROBABILITY`).
+- ** Telemetría Meteorológica / Weather Telemetry:** Monitoreo en puntos estratégicos (Temperatura, Humedad, Viento, Precipitación en mm) para evaluar el riesgo de propagación.
+- **Arquitectura Serverless:** Ejecución programada mediante _cron jobs_ en GitHub Actions, sin requerir hardware local.
 
 ---
 

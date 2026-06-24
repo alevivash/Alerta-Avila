@@ -1,6 +1,6 @@
 # Sistema de Alerta Temprana para Incendios Forestales en el Waraira Repano
 # Este script se encarga de generar un mapa a color real del Parque Nacional El Ávila (Waraira Repano) utilizando imágenes Sentinel-2, aplicando un filtro de nubes basado en la probabilidad de nubes y guardando el resultado localmente como PNG.
-# VERSION VIEJA
+# version 1.0 - 2026-05-15 - Alejandro Vivas
 # Autor: [Alejandro Vivas]
 
 import ee

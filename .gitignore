@@ -2,6 +2,7 @@
 alertas-temprana-avila-aff61fb63708.json
 *.json
 !el_avila_waraira_repano.geojson
+.env
 
 # Ignorar archivos generados automáticamente
 historial_climatico.csv
