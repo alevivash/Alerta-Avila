@@ -4,6 +4,9 @@ alertas-temprana-avila-aff61fb63708.json
 !el_avila_waraira_repano.geojson
 .env
 
+# Ocultar la carpeta de archivos viejos/pruebas
+old/
+
 # Ignorar archivos generados automáticamente
 historial_climatico.csv
 avila_color_real.png
