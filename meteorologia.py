@@ -67,7 +67,7 @@ def guardar_historial_nube(nombre_estacion, clima):
         # 1. Leer la llave secreta que ya tienes configurada para GEE
         key_json = os.environ.get("GEE_SERVICE_ACCOUNT_KEY")
         if not key_json:
-            print(f"⚠️ No se guardó {nombre_estacion}: Falta la llave secreta en el entorno.")
+            print(f"No se guardó {nombre_estacion}: Falta la llave secreta en el entorno.")
             return
 
         # 2. Autenticarse con Google Sheets
@@ -97,10 +97,10 @@ def guardar_historial_nube(nombre_estacion, clima):
 
         # 5. Insertar la fila al final del documento
         sheet.append_row(fila)
-        print(f"☁️ Guardado en nube exitoso: {nombre_estacion}")
+        print(f"Guardado en nube exitoso: {nombre_estacion}")
 
     except Exception as e:
-        print(f"⚠️ Error al conectar con Google Sheets para {nombre_estacion}: {e}")
+        print(f"Error al conectar con Google Sheets para {nombre_estacion}: {e}")
 
 def obtener_clima_actual(lat, lon):
     """Consulta la API de Open-Meteo con sistema de reintentos."""
@@ -139,6 +139,6 @@ def obtener_reporte_completo(puntos):
     return reporte
 # Ejecución de prueba
 if __name__ == "__main__":
-    print("📡 Iniciando recolección de datos meteorológicos...")
+    print("Iniciando recolección de datos meteorológicos...")
     resultado = obtener_reporte_completo(ubicaciones_estrategicas)
-    print("\n✅ Proceso completado. Revisa el archivo 'historial_climatico.csv'.")
+    print("\nProceso completado. Revisa el archivo 'historial_climatico.csv'.")
