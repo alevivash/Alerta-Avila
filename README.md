@@ -34,6 +34,18 @@ An automated, serverless environmental monitoring system for El Ávila National 
 
 ---
 
+## 🛰️ Fuente de Datos: Copernicus Sentinel-2 / Data Source
+
+Este sistema se alimenta de la constelación satelital **Sentinel-2** de la Agencia Espacial Europea (ESA), procesada a través de Google Earth Engine. / _This system is powered by the European Space Agency's (ESA) **Sentinel-2** satellite constellation, processed via Google Earth Engine._
+
+- **Resolución Espacial / Spatial Resolution:** 10m - 20m por píxel.
+- **Frecuencia de Revisita / Revisit Time:** Aproximadamente cada 5 días.
+- **Análisis de Severidad (NBR):** Utiliza las bandas _Near Infrared_ (B8A) y _Short Wave Infrared_ (B12) para evaluar el daño en la biomasa forestal tras un incendio.
+- **Visualización (Color Real):** Composiciones RGB utilizando las bandas B4 (Red), B3 (Green) y B2 (Blue).
+- **Filtro de Nubes / Cloud Masking:** Implementación del algoritmo `COPERNICUS/S2_CLOUD_PROBABILITY` para garantizar imágenes nítidas sobre la topografía compleja de la montaña.
+
+---
+
 ## ⚙️ Arquitectura del Sistema / System Architecture
 
 El flujo de datos se ejecuta de forma autónoma siguiendo esta estructura / _The data flow executes autonomously following this structure_:
@@ -53,14 +65,5 @@ El flujo de datos se ejecuta de forma autónoma siguiendo esta estructura / _The
        ▼
 [notificaciones.py] ──► (Telegram API: Text + Images)
 ```
-
-## 🚀 Instalación Local / Local Setup
-
-Para ejecutar o probar el código en una máquina local / _To run or test the code on a local machine_:
-
-1. **Clonar el repositorio / Clone the repository:**
-   bash
-   git clone [https://github.com/tu_usuario/Alerta-Avila.git](https://github.com/tu_usuario/Alerta-Avila.git)
-   cd Alerta-Avila
 
 Autor / Author: Alejandro Vivas
