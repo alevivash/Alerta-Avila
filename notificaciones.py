@@ -12,7 +12,7 @@ def enviar_telegram(mensaje, ruta_imagen=None):
     TOKEN = os.environ.get("TELEGRAM_TOKEN")
     CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID")
     
-    # Validación de seguridad por si olvidaste configurarlas
+    # Validación de seguridad
     if not TOKEN or not CHAT_ID:
         print("⚠️ Error: Las variables de entorno TELEGRAM_TOKEN o TELEGRAM_CHAT_ID no están definidas.")
         return False
