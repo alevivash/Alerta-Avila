@@ -1,0 +1,245 @@
+[33mcommit e0f8c55a6f4a9c45c342cc8abd233c0b20563f06[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Mon Jul 13 15:35:40 2026 -0400
+
+    few changes
+
+[33mcommit 6a8d665e697c95f802fab409cab90c50ff17cc8b[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:53:38 2026 -0400
+
+    limpiando
+
+[33mcommit f503a48b1440ed55b4480be4944a0e8fb9dfd6b7[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:49:55 2026 -0400
+
+    Limpiando cache para aplicar .gitignore correctamente
+
+[33mcommit 852565c9bfa39677d9db9dd0d68d36db7ec0e31e[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:45:33 2026 -0400
+
+    changes
+
+[33mcommit 3c9a0b886e68c4122dbe0e53b5554b4bdeb941c6[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:36:29 2026 -0400
+
+    +1
+
+[33mcommit 281f717cee4bba86508eb950c0ef32b02685ac79[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:35:07 2026 -0400
+
+    changes
+
+[33mcommit bb02ddb971e5d9b8ebc29fe6dd70063edd05c260[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:22:38 2026 -0400
+
+    improving functions
+
+[33mcommit 111b43ce3cf10384a8b73bee94b29765ac5e1226[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:20:26 2026 -0400
+
+    changes
+
+[33mcommit 6be50e0bc5cc3de37ba699d52fe4e824caf9971b[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Wed Jun 24 15:12:55 2026 -0400
+
+    README
+
+[33mcommit 23d84e8fb77b22aa9614f0a609da067de657017a[m
+Author: Alejandro Vivas <68204436+alevivash@users.noreply.github.com>
+Date:   Mon Jun 22 13:54:24 2026 -0400
+
+    Fix formatting in README for cloning instructions
+
+[33mcommit ae3740d784a4ef7c6c7aee0306660c4298b571aa[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 11:46:27 2026 -0400
+
+    Authentification in main
+
+[33mcommit f036e0525a704930e78997e51040897b7fd140c2[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 11:44:34 2026 -0400
+
+    README
+
+[33mcommit 921c4a22ddaf84c08f870b20dbc6cc76f75cd463[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 11:41:23 2026 -0400
+
+    adding gee credentials
+
+[33mcommit af6f49aa4505676436eeb385f1fbf59f12e913d2[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 11:39:33 2026 -0400
+
+    README
+
+[33mcommit 0d169bb4375a90ba0e468e346c660018bbec0834[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 10:54:55 2026 -0400
+
+    Authentification in main
+
+[33mcommit 405363d9deb1a29fe4c58b5d7290f9074582c036[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 10:49:33 2026 -0400
+
+    librerias para google sheets
+
+[33mcommit 8bb13adb6e510794ac3091f85898a4075ada0c57[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 10:45:01 2026 -0400
+
+    adding gee credentials
+
+[33mcommit 68d4b21f8e63a9c81cf532970a28f63253d285e2[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 10:35:19 2026 -0400
+
+    saving information in sheets
+
+[33mcommit c60c170dcfd82802d32f30a2b5b7ddef3991541d[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 10:06:06 2026 -0400
+
+    adding gee credentials
+
+[33mcommit 407b41f758139c5499a929d0df496ead0d7fab5c[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 10:01:58 2026 -0400
+
+    Authentification in main
+
+[33mcommit 20f77f84c2ec7174a854216ccaa4a42fc81865f9[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 09:52:49 2026 -0400
+
+    adding gee credentials
+
+[33mcommit 382b1ab953146726a63a23f46f1c05a0d002a73b[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 09:48:30 2026 -0400
+
+    fixing requirements
+
+[33mcommit e4fe650c54c9c58322dda845400a898b4d7b8400[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 09:45:32 2026 -0400
+
+    fixing requirements
+
+[33mcommit eabefe1cf44ae5b9726372ea204da7e9a4492c0c[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 09:37:16 2026 -0400
+
+    automatitation with github actions
+
+[33mcommit ea8ae8574b8a078fac9b5b4da0d6438765403c19[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 09:23:01 2026 -0400
+
+    changes
+
+[33mcommit 586effe8302891894f016a02dcc511e43b784e91[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 09:06:53 2026 -0400
+
+    secrets
+
+[33mcommit a642cf7e9e57d7f5408a767969506f3bdfc8c929[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 08:57:32 2026 -0400
+
+    Agregando gitignore y protegiendo credenciales
+
+[33mcommit d30eb4cd3f26c5d90d178372be588cdeb1a30820[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 08:55:55 2026 -0400
+
+    Agregando gitignore y protegiendo credenciales
+
+[33mcommit c5f1582a2d123ffcf7f595e629de3e15b4f391e7[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 21 08:15:03 2026 -0400
+
+    precipitation
+
+[33mcommit 8f4326c4029a25078e25a4423e30f182edf68314[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Tue Jun 16 20:52:55 2026 -0400
+
+    old versions
+
+[33mcommit 07473c93864fad0db2dfb54185da96a3b20b6841[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Tue Jun 16 20:49:42 2026 -0400
+
+    secrects
+
+[33mcommit b6933342385b835091325b6cf022fee9f205a930[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Tue Jun 16 20:46:30 2026 -0400
+
+    adding time information pictures
+
+[33mcommit a3d372220c0bc61cb71dff9def1ea00dcb4a360a[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Tue Jun 16 18:56:49 2026 -0400
+
+    adding times
+
+[33mcommit 1fa4a6fb56467bfa0030c36201d534cd54ad531e[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Mon Jun 15 23:04:45 2026 -0400
+
+    subir a drive
+
+[33mcommit 6a8ac322e0fe6c95b72504ddd040230a307d8c05[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Mon Jun 15 22:38:08 2026 -0400
+
+    monitoreo de temperatura diaria
+
+[33mcommit b33d5610f176d22e58bb26176e6c84613c3477c5[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 14 22:28:19 2026 -0400
+
+    improving metereology script
+
+[33mcommit 5715b26d75815eb8191b59d31dc3706ccbd54207[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Mon Jun 8 23:45:07 2026 -0400
+
+    new changes
+
+[33mcommit a97b91ed1222de5a5305f3c2cbf5526a7ff6b93f[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 7 10:58:51 2026 -0400
+
+    metereologiav1
+
+[33mcommit 2abc2e6eedc3c417df7eef2e3a4f96b898f32e57[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 7 10:40:07 2026 -0400
+
+    integracion hotspots
+
+[33mcommit 8246a9353e0258a06ae834e535cafdff2757505c[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sun Jun 7 07:56:00 2026 -0400
+
+    areas quemadas
+
+[33mcommit b008834343550babf632e385722b13babc595100[m
+Author: Alejandro <alejandrovivash5@gmail.com>
+Date:   Sat Jun 6 23:37:31 2026 -0400
+
+    first push

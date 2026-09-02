@@ -61,7 +61,6 @@ def ejecutar_sistema():
                 print(datos_clima)     # Lo mostramos en el terminal
                 
         # 3. Enviamos a Telegram todo el texto agrupado + la imagen
-        # (Asegúrate de que 'alerta_avila_nbr.png' sea el nombre correcto de tu imagen)
         notificaciones.enviar_telegram(reporte, "alerta_avila_nbr.png")
             
     else:
