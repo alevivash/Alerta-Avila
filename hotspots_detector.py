@@ -18,8 +18,8 @@ def obtener_vectores_fuego(roi):
 
 
     # SE PUEDEN USAR ESTAS FECHAS COMO PRUEBA PARA OBTENER FOCOS HISTÓRICOS
-    #fecha_str = '2024-03-20' 
-    #hoy_str = '2024-04-10'
+    fecha_str = '2024-03-20' 
+    hoy_str = '2024-04-10'
     
     # 1. Obtener la colección raster diaria
     firms = (ee.ImageCollection('FIRMS')
