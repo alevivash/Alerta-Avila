@@ -32,8 +32,8 @@ def ejecutar_sistema():
     print("🚀 Iniciando escaneo del Waraira Repano...")
     
     focos_detectados = hotspots_detector.obtener_vectores_fuego(roi)
-    #cantidad = focos_detectados.size().getInfo()
-    cantidad = 1 # USAR PARA SIMULACION
+    cantidad = focos_detectados.size().getInfo()
+    #cantidad = 1 # USAR PARA SIMULACION
     
     if cantidad > 0:
         # 1. Empezamos a redactar el reporte y lo imprimimos
