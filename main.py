@@ -31,7 +31,7 @@ roi = ee.Geometry(geojson_data['features'][0]['geometry'])
 def ejecutar_sistema():
     print("🚀 Iniciando escaneo del Waraira Repano...")
     
-    focos_detectados = hotspots_detector.obtener_vectores_fuego(roi)
+    focos_detectados = hotspots_detector.obtener_vectores_fuego(roi, focos_detectados)
     cantidad = focos_detectados.size().getInfo()
     #cantidad = 1 # USAR PARA SIMULACION
     
