@@ -40,7 +40,7 @@ def mask_s2_clouds(image):
 # =====================================================================
 # FUNCIÓN PRINCIPAL PARA EL ORQUESTADOR
 # =====================================================================
-def generar_mapa_con_focos(roi):
+def generar_mapa_con_focos(roi, focos_detectados):
     """
     Evalúa anomalías térmicas recientes frente al histórico, 
     calcula Delta NBR y genera un PNG con estampa de tiempo.
@@ -107,17 +107,26 @@ def generar_mapa_con_focos(roi):
         # =====================================================================
         # DESCARGA DEL MAPA VISUAL Y APLICACIÓN DE ESTAMPA
         # =====================================================================
-        parametros_visuales = {
-            'min': -40, 
-            'max': 0,
-            'palette': ['red', 'yellow', 'green'],
+
+        #Aqui cambie para que los hotspots se vean reflejados en la imagen
+        print("Descargando mapa NBR con los focos superpuestos...")
+        
+        # capa NBR a colores (RGB)
+        nbr_rgb = delta_avila.visualize(min=-40, max=0, palette=['red', 'yellow', 'green'])
+        
+        # vectores del fuego detectado en círculos azules muy visibles
+        focos_rgb = focos_detectados.style(color='blue', pointSize=8, pointShape='circle', width=2)
+        
+        # Juntamos las dos funciones con blend
+        mapa_mezclado = nbr_rgb.blend(focos_rgb)
+        
+        # URL de descarga del mapa combinado
+        url_mapa = mapa_mezclado.getThumbURL({
             'dimensions': 1200, 
             'region': roi,
             'format': 'png'
-        }
-        
-        print("Descargando mapa de alertas matemáticas (Delta NBR)...")
-        url_mapa = delta_avila.getThumbURL(parametros_visuales)
+        })
+
         respuesta = requests.get(url_mapa, timeout=60)
         
         if respuesta.status_code == 200:
