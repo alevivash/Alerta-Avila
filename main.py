@@ -31,7 +31,7 @@ roi = ee.Geometry(geojson_data['features'][0]['geometry'])
 def ejecutar_sistema():
     print("🚀 Iniciando escaneo del Waraira Repano...")
     
-    focos_detectados = hotspots_detector.obtener_vectores_fuego(roi, focos_detectados)
+    focos_detectados = hotspots_detector.obtener_vectores_fuego(roi)
     cantidad = focos_detectados.size().getInfo()
     #cantidad = 1 # USAR PARA SIMULACION
     
@@ -41,7 +41,7 @@ def ejecutar_sistema():
         print(f"🔥 ALERTA: {cantidad} focos detectados.")
         
         # Generar mapa visual cruzado (CORREGIDO: Se pasa el argumento 'roi')
-        analisis_vegetacion_nbr.generar_mapa_con_focos(roi)
+        analisis_vegetacion_nbr.generar_mapa_con_focos(roi, focos_detectados)
         
         lista_focos = focos_detectados.getInfo()['features']
         
