@@ -54,6 +54,10 @@ def generar_mapa_con_focos(roi):
         f_fin_str = fecha_fin_actual.strftime('%Y-%m-%d')
         f_ini_str = fecha_inicio_actual.strftime('%Y-%m-%d')
 
+        #FECHAS PARA PRUEBA
+        f_ini_str = '2024-03-20'
+        f_fin_str = '2024-04-10'
+
         coleccion_base = obtener_coleccion_unida(roi, f_ini_str, f_fin_str)
         sentinel_coleccion_limpia = coleccion_base.map(mask_s2_clouds)
 
