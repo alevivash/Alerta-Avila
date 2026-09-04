@@ -26,7 +26,7 @@ def obtener_vectores_fuego(roi):
              .filterBounds(roi)
              .filterDate(fecha_str, hoy_str))
 
-    # Verificar si la colección está vacía: Sin esto el script muere, tras intenrar colocar los puntos de fuego en el mapa cuando no hay.
+    # STOP: Verificar si la colección está vacía: Sin esto el script muere, tras intenrar colocar los puntos de fuego en el mapa cuando no hay.
     if firms.size().getInfo() == 0:
         return None
     
@@ -67,13 +67,22 @@ roi = ee.Geometry(geom_dict)
 
 focos_detectados = obtener_vectores_fuego(roi)
 
+# STOP: Si la función nos devolvió "None", detiene todo antes de contar
+if focos_detectados is None:
+    print("✅ Bosque seguro. No hay anomalías térmicas en FIRMS hoy.")
+    import os
+    import sys
+    if os.path.exists('focos_activos.geojson'):
+        os.remove('focos_activos.geojson')
+    sys.exit(0)
+
 # Validar si hay incendios
 cantidad = focos_detectados.size().getInfo()
 
 if cantidad > 0:
     print(f" ¡ALERTA TÁCTICA! Se detectaron {cantidad} puntos de fuego.")
     
-    # 4. EXTRAER DATOS EN FORMATO GEOJSON PARA EL CRUCE CON EL SCRIPT 1
+    # EXTRAER DATOS EN FORMATO GEOJSON PARA EL CRUCE CON EL SCRIPT 1
     geojson_focos = focos_detectados.getInfo()
     
     # Guardamos los puntos en un archivo local para que el Script 1 pueda leerlo y pintarlo encima
@@ -81,7 +90,7 @@ if cantidad > 0:
         json.dump(geojson_focos, f, ensure_ascii=False, indent=4)
     print("Archivo 'focos_activos.geojson' generado para el cruce analítico.")
     
-    # 5. EXTRAER COORDENADAS PARA TELEGRAM
+    # EXTRAER COORDENADAS PARA TELEGRAM
     lista_focos = geojson_focos['features']
     for i, foco in enumerate(lista_focos):
         lon, lat = foco['geometry']['coordinates']
@@ -94,3 +103,5 @@ else:
     import os
     if os.path.exists('focos_activos.geojson'):
         os.remove('focos_activos.geojson')
+    import sys
+    sys.exit(0)
