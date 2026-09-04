@@ -35,7 +35,7 @@ def ejecutar_sistema():
 
     if focos_detectados is None:
         cantidad = 0
-    else
+    else:
         cantidad = focos_detectados.size().getInfo()
 
     
