@@ -21,12 +21,16 @@ def obtener_vectores_fuego(roi):
     #fecha_str = '2024-03-20' 
     #hoy_str = '2024-04-10'
     
-    # 1. Obtener la colección raster diaria
+    # Obtener la colección raster diaria
     firms = (ee.ImageCollection('FIRMS')
              .filterBounds(roi)
              .filterDate(fecha_str, hoy_str))
+
+    # Verificar si la colección está vacía: Sin esto el script muere, tras intenrar colocar los puntos de fuego en el mapa cuando no hay.
+    if firms.size().getInfo() == 0:
+        return None
     
-    # 2. Aplastar en una sola imagen con la temperatura máxima del día
+    # Aplastar en una sola imagen con la temperatura máxima del día
     fuego_max = firms.select('T21').max().toInt16() # T21 es la banda de temperatura de FIRMS, convertida a entero para facilitar la máscara
     
     # Creamos una máscara para asegurarnos de que solo procesamos píxeles calientes
@@ -34,7 +38,7 @@ def obtener_vectores_fuego(roi):
     fuego_mascara = fuego_max.gt(0) 
     imagen_fuego_limpia = fuego_max.updateMask(fuego_mascara)
     
-    # 3. EL TRUCO VECTORIAL: Convertimos los píxeles en Puntos (FeatureCollection)
+    # Convertimos los píxeles en Puntos (FeatureCollection)
     focos_vectoriales = imagen_fuego_limpia.reduceToVectors(
         geometry=roi,
         crs=imagen_fuego_limpia.projection(),
