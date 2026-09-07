@@ -15,6 +15,7 @@ import json
 import gspread                                         
 from google.oauth2.service_account import Credentials  
 
+
 # Sesión persistente para evitar bloqueos de red
 session = requests.Session()
 
@@ -109,9 +110,9 @@ def obtener_clima_actual(lat, lon):
         "latitude": lat,
         "longitude": lon,
         "current": ["temperature_2m", "relative_humidity_2m", "wind_speed_10m", "direct_radiation"],
-        "daily": ["precipitation_sum"], # Solicitamos la acumulada
+        "daily": ["precipitation_sum"],
         "timezone": "America/Caracas",
-        "forecast_days": 1 # Solo el día de hoy
+        "forecast_days": 1
     }
     
     for intento in range(3):
@@ -136,15 +137,14 @@ def obtener_reporte_completo(puntos, cantidad_fuegos):
         
         if datos:
             reporte[nombre] = datos
-            # Pasamos la variable a las funciones de guardado
-            guardar_historial_nube(nombre, datos, cantidad_fuegos) #esto actualiza el sheets
-            #guardar_historial_csv(nombre, datos, cantidad_fuegos) 
+            guardar_historial_nube(nombre, datos, cantidad_fuegos)
+            # guardar_historial_csv(nombre, datos, cantidad_fuegos)
             
         time.sleep(1)
     return reporte
     
-# Ejecución de prueba
+# Ejecución de prueba local
 if __name__ == "__main__":
     print("Iniciando recolección de datos meteorológicos...")
-    resultado = obtener_reporte_completo(ubicaciones_estrategicas)
-    print("\nProceso completado. Revisa el archivo 'historial_climatico.csv'.")
+    resultado = obtener_reporte_completo(ubicaciones_estrategicas, cantidad_fuegos=0)
+    print("\nProceso completado.")
