@@ -82,11 +82,11 @@ def ejecutar_sistema():
         reporte_clima = meteorologia.obtener_reporte_completo(puntos_control,cantidad)
         
         for nombre, clima in reporte_clima.items():
-            # NUEVO: Precipitación agregada a la línea de reporte
+            # AGREGADA PRECIPITACION ACUMULADA
             linea_clima = (
                 f"📍 {nombre}:\n"
-                f"   🌡️ Temp: {clima['temperature_2m']} °C | 💧 Humedad: {clima['relative_humidity_2m']} %\n"
-                f"   💨 Viento: {clima['wind_speed_10m']} km/h | 🌧️ Precipitación: {clima.get('precipitation', 0)} mm\n\n"
+                f"   🌡️ Temp: {clima['actual']['temperature_2m']} °C | 💧 Humedad: {clima['actual']['relative_humidity_2m']} %\n"
+                f"   💨 Viento: {clima['actual']['wind_speed_10m']} km/h | 🌧️ Precipitación: {clima['diario']['precipitation_sum'][0]} mm\n\n"
             )
             reporte += linea_clima # Lo sumamos al reporte final
             print(linea_clima)     # Lo mostramos en el terminal
