@@ -35,7 +35,7 @@ ubicaciones_estrategicas = {
     "Izcaragua": {"lat": 10.4992, "lon": -66.7264}
 }
 
-def guardar_historial_csv(nombre_estacion, clima):
+def guardar_historial_nube(nombre_estacion, clima, cantidad_fuegos):
     """Guarda los datos consultados en una base de datos plana CSV con manejo de errores."""
     archivo = 'historial_climatico.csv'
     existe = os.path.exists(archivo)
