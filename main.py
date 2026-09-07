@@ -79,7 +79,7 @@ def ejecutar_sistema():
             "Pico Naiguatá (Cota Alta)": {"lat": 10.5428, "lon": -66.7828}
         }
         
-        reporte_clima = meteorologia.obtener_reporte_completo(puntos_control)
+        reporte_clima = meteorologia.obtener_reporte_completo(puntos_control,cantidad)
         
         for nombre, clima in reporte_clima.items():
             # NUEVO: Precipitación agregada a la línea de reporte
