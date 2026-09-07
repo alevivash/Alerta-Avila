@@ -35,8 +35,8 @@ ubicaciones_estrategicas = {
     "Izcaragua": {"lat": 10.4992, "lon": -66.7264}
 }
 
-def guardar_historial_nube(nombre_estacion, clima, cantidad_fuegos):
-    """Guarda los datos consultados en una base de datos plana CSV con manejo de errores."""
+def guardar_historial_csv(nombre_estacion, clima, cantidad_fuegos):
+    """Guarda los datos consultados en una base de datos plana CSV."""
     archivo = 'historial_climatico.csv'
     existe = os.path.exists(archivo)
     
@@ -44,33 +44,32 @@ def guardar_historial_nube(nombre_estacion, clima, cantidad_fuegos):
         with open(archivo, mode='a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             if not existe:
-                # CAMBIO: Se agregó Precip_mm a la cabecera
-                writer.writerow(['Fecha_Hora', 'Estacion', 'Temp_C', 'Humedad_%', 'Viento_kmh', 'Radiacion_Wm2', 'Precip_mm'])
+                writer.writerow(['Fecha_Hora', 'Estacion', 'Temp_C', 'Humedad_%', 'Viento_kmh', 'Radiacion_Wm2', 'Precip_Acum_mm', 'Fuegos_Activos'])
             
-            # CAMBIO: Se agregó la extracción segura de la precipitación
-            precip = clima.get('precipitation', 0)
+            actual = clima['actual']
+            precip_acumulada = clima['diario']['precipitation_sum'][0]
+            
             writer.writerow([
                 datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), 
                 nombre_estacion, 
-                clima['temperature_2m'], 
-                clima['relative_humidity_2m'], 
-                clima['wind_speed_10m'], 
-                clima['direct_radiation'],
-                precip
+                actual['temperature_2m'], 
+                actual['relative_humidity_2m'], 
+                actual['wind_speed_10m'], 
+                actual['direct_radiation'],
+                precip_acumulada,
+                cantidad_fuegos
             ])
     except PermissionError:
-        print(f"ADVERTENCIA: No se pudo guardar el registro de {nombre_estacion}. El archivo '{archivo}' está abierto o bloqueado.")
+        print(f"ADVERTENCIA: No se pudo guardar el CSV de {nombre_estacion}.")
 
-def guardar_historial_nube(nombre_estacion, clima):
-    """Guarda los datos consultados directamente en Google Sheets."""
+def guardar_historial_nube(nombre_estacion, clima, cantidad_fuegos):
+    """Guarda los datos consultados directamente en Google Sheets con precipitación acumulada y fuegos."""
     try:
-        # 1. Leer la llave secreta que ya tienes configurada para GEE
         key_json = os.environ.get("GEE_SERVICE_ACCOUNT_KEY")
         if not key_json:
             print(f"No se guardó {nombre_estacion}: Falta la llave secreta en el entorno.")
             return
 
-        # 2. Autenticarse con Google Sheets
         creds_dict = json.loads(key_json)
         scopes = [
             'https://www.googleapis.com/auth/spreadsheets',
@@ -79,28 +78,24 @@ def guardar_historial_nube(nombre_estacion, clima):
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         cliente = gspread.authorize(creds)
 
-        # 3. Abrir la base de datos
         ID_DOCUMENTO = "1S1hQ-qjbdeU1PsWGSRYu-HM7sCcXS9ljraJn1SJ6-xg"
         sheet = cliente.open_by_key(ID_DOCUMENTO).sheet1
 
-        # Extraemos los datos separados
+        # Extraemos correctamente del diccionario anidado
         actual = clima['actual']
         precip_acumulada = clima['diario']['precipitation_sum'][0]
 
-        # 4. Preparar la fila de datos
-        precip = clima.get('precipitation', 0)
         fila = [
             datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), 
             nombre_estacion, 
-            clima['temperature_2m'], 
-            clima['relative_humidity_2m'], 
-            clima['wind_speed_10m'], 
-            clima['direct_radiation'],
+            actual['temperature_2m'], 
+            actual['relative_humidity_2m'], 
+            actual['wind_speed_10m'], 
+            actual['direct_radiation'],
             precip_acumulada,
             cantidad_fuegos
         ]
 
-        # 5. Insertar la fila al final del documento
         sheet.append_row(fila)
         print(f"Guardado en nube exitoso: {nombre_estacion}")
 
