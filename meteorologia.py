@@ -79,9 +79,13 @@ def guardar_historial_nube(nombre_estacion, clima):
         creds = Credentials.from_service_account_info(creds_dict, scopes=scopes)
         cliente = gspread.authorize(creds)
 
-        # 3. Abrir tu documento (¡REEMPLAZA ESTO CON TU ID REAL!)
+        # 3. Abrir la base de datos
         ID_DOCUMENTO = "1S1hQ-qjbdeU1PsWGSRYu-HM7sCcXS9ljraJn1SJ6-xg"
         sheet = cliente.open_by_key(ID_DOCUMENTO).sheet1
+
+        # Extraemos los datos separados
+        actual = clima['actual']
+        precip_acumulada = clima['diario']['precipitation_sum'][0]
 
         # 4. Preparar la fila de datos
         precip = clima.get('precipitation', 0)
@@ -92,7 +96,8 @@ def guardar_historial_nube(nombre_estacion, clima):
             clima['relative_humidity_2m'], 
             clima['wind_speed_10m'], 
             clima['direct_radiation'],
-            precip
+            precip_acumulada,
+            cantidad_fuegos
         ]
 
         # 5. Insertar la fila al final del documento
@@ -108,22 +113,26 @@ def obtener_clima_actual(lat, lon):
     params = {
         "latitude": lat,
         "longitude": lon,
-        # CAMBIO: Se agregó "precipitation" a la consulta
-        "current": ["temperature_2m", "relative_humidity_2m", "wind_speed_10m", "direct_radiation", "precipitation"],
-        "timezone": "America/Caracas"
+        "current": ["temperature_2m", "relative_humidity_2m", "wind_speed_10m", "direct_radiation"],
+        "daily": ["precipitation_sum"], # Solicitamos la acumulada
+        "timezone": "America/Caracas",
+        "forecast_days": 1 # Solo el día de hoy
     }
     
     for intento in range(3):
         try:
             response = session.get(url, params=params, timeout=10)
             response.raise_for_status()
-            return response.json()['current']
+            return {
+                "actual": response.json()['current'],
+                "diario": response.json()['daily']
+            }
         except Exception as e:
             print(f"⚠️ Intento {intento+1} fallido para ({lat}, {lon}): {e}")
             time.sleep(2)
     return None
 
-def obtener_reporte_completo(puntos):
+def obtener_reporte_completo(puntos, cantidad_fuegos):
     """Recorre las ubicaciones, extrae el clima y lo guarda en Sheets."""
     reporte = {}
     for nombre, coords in puntos.items():
@@ -132,11 +141,13 @@ def obtener_reporte_completo(puntos):
         
         if datos:
             reporte[nombre] = datos
-            guardar_historial_nube(nombre, datos) # <-- actualizar sheets
-            #guardar_historial_csv(nombre, datos) # <-- mantener también el CSV local para respaldo
+            # Pasamos la variable a las funciones de guardado
+            guardar_historial_nube(nombre, datos, cantidad_fuegos) #esto actualiza el sheets
+            #guardar_historial_csv(nombre, datos, cantidad_fuegos) 
             
-        time.sleep(1) # Pausa estratégica aumentada un poco para no saturar la API de Google
+        time.sleep(1)
     return reporte
+    
 # Ejecución de prueba
 if __name__ == "__main__":
     print("Iniciando recolección de datos meteorológicos...")
