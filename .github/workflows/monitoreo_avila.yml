@@ -2,12 +2,13 @@ name: Monitoreo Satelital y Climático Waraira Repano
 
 on:
   schedule:
-    # SE EJECUTA DIARIAMENTE A LAS 10:00, 14:00 y 18:00 UTC
-    # (Recuerda que UTC es hora de Caracas +4h en horario de invierno, +3h en verano)
-    # 06:00, 10:00 y 14:00 hora de Venezuela
-    - cron: "0 10 * * *"
-    - cron: "0 14 * * *"
-    - cron: "0 18 * * *"
+    # DISTRIBUCIÓN EQUITATIVA: Se ejecuta cada 4 horas exactas.
+    # Usamos el minuto 12 para evitar el colapso de servidores de GitHub en las horas en punto.
+    #
+    # Equivalencias de horarios (UTC vs Hora Venezuela):
+    # UTC: 02:12, 06:12, 10:12, 14:12, 18:12, 22:12
+    # VET: 10:12 PM, 02:12 AM, 06:12 AM, 10:12 AM, 02:12 PM, 06:12 PM
+    - cron: "12 */4 * * *"
   workflow_dispatch: # Permite ejecutar el script manualmente con un botón
 
 jobs:
