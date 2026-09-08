@@ -56,11 +56,11 @@ def ejecutar_sistema():
             if clima:
                 # 2. Redactamos la información climática (NUEVO: Precipitación)
                 datos_clima = (
-                    f"📍 Ubicación: {lat}, {lon}\n"
-                    f"   🌡️ Temp: {clima['temperature_2m']}°C | "
-                    f"💧 Humedad: {clima['relative_humidity_2m']}%\n"
-                    f"   💨 Viento: {clima['wind_speed_10m']} km/h | "
-                    f"🌧️ Precipitación: {clima.get('precipitation', 0)} mm\n\n"
+                    f"🔥 FOCO ACTIVO:\n"
+                    f"   🗺️ Mapa: {link_maps}\n"
+                    f"   📍 Coordenadas: {lat:.5f}, {lon:.5f}\n"
+                    f"   🌡️ Temp: {clima['actual']['temperature_2m']} °C | 💧 Humedad: {clima['actual']['relative_humidity_2m']} %\n"
+                    f"   💨 Viento: {clima['actual']['wind_speed_10m']} km/h | 🌧️ Precip_Acum: {clima['diario']['precipitation_sum'][0]} mm\n\n"
                 )
                 reporte += datos_clima # Lo sumamos al reporte final
                 print(datos_clima)     # Lo mostramos en el terminal
@@ -83,8 +83,14 @@ def ejecutar_sistema():
         
         for nombre, clima in reporte_clima.items():
             # AGREGADA PRECIPITACION ACUMULADA
+
+            lat = puntos_control[nombre]['lat']
+            lon = puntos_control[nombre]['lon']
+            link_maps = f"https://www.google.com/maps?q={lat},{lon}"
+            
             linea_clima = (
                 f"📍 {nombre}:\n"
+                f"   🗺️ Mapa: {link_maps}\n"
                 f"   🌡️ Temp: {clima['actual']['temperature_2m']} °C | 💧 Humedad: {clima['actual']['relative_humidity_2m']} %\n"
                 f"   💨 Viento: {clima['actual']['wind_speed_10m']} km/h | 🌧️ Precipitación: {clima['diario']['precipitation_sum'][0]} mm\n\n"
             )
